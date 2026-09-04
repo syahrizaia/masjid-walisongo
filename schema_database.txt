@@ -1,0 +1,165 @@
+# SKEMA DATABASE GOOGLE SHEETS
+Aplikasi Manajemen Masjid Wali Songo
+
+Setiap Sheet merepresentasikan satu Tabel. Baris pertama (Row 1) adalah Header Kolom.
+
+## 1. Users
+Menyimpan data pengguna yang bisa login ke aplikasi.
+- ID_User (Primary Key)
+- Username
+- Password (Dalam praktik nyata sebaiknya di-hash)
+- Nama_Lengkap
+- Role (Admin, Ketua, Bendahara, Sekretaris, Takmir)
+- Status (Aktif/Nonaktif)
+
+## 2. Settings
+Pengaturan global aplikasi.
+- Key (Primary Key, misal: 'NAMA_MASJID', 'LOKASI')
+- Value (Nilai dari key tersebut)
+- Deskripsi
+
+## 3. Pengurus
+Data jajaran pengurus masjid.
+- ID_Pengurus (Primary Key)
+- ID_User (Foreign Key ke Users)
+- Jabatan
+- No_HP
+- Alamat
+- Tanggal_Mulai
+- Tanggal_Akhir
+
+## 4. Jamaah
+Data jamaah tetap atau warga sekitar masjid.
+- ID_Jamaah (Primary Key)
+- NIK
+- Nama_Lengkap
+- Alamat
+- No_HP
+- Pekerjaan
+- Kategori_Usia (Anak, Remaja, Dewasa, Lansia)
+
+## 5. Pemasukan
+Catatan kas masuk masjid.
+- ID_Pemasukan (Primary Key)
+- Tanggal
+- Kategori (Infaq Jumat, Kotak Amal, Parkir, Sumbangan, Lain-lain)
+- Keterangan
+- Nominal
+- ID_User_Input (Foreign Key ke Users)
+- Timestamp
+
+## 6. Pengeluaran
+Catatan kas keluar masjid.
+- ID_Pengeluaran (Primary Key)
+- Tanggal
+- Kategori (Operasional, Pembangunan, Kegiatan, Lain-lain)
+- Keterangan
+- Nominal
+- ID_User_Input (Foreign Key ke Users)
+- Timestamp
+
+## 7. Donasi
+Data khusus donatur yang masuk.
+- ID_Donasi (Primary Key)
+- Tanggal
+- Nama_Donatur (Bisa mereferensi nama Jamaah atau "Hamba Allah")
+- Kategori_Donasi (Zakat, Infaq, Sadaqah, Wakaf)
+- Nominal_Barang (Nominal uang atau jenis barang/aset)
+- Keterangan
+- ID_User_Input
+
+## 8. Kegiatan
+Data acara atau kegiatan masjid.
+- ID_Kegiatan (Primary Key)
+- Nama_Kegiatan
+- Tanggal_Mulai
+- Tanggal_Selesai
+- Penanggung_Jawab (Foreign Key ke Pengurus)
+- Anggaran
+- Status (Rencana, Sedang Berjalan, Selesai, Batal)
+
+## 9. JadwalImam
+Jadwal tugas imam rawatib/salat maktubah.
+- ID_Jadwal_Imam (Primary Key)
+- Tanggal
+- Waktu_Salat (Subuh, Dzuhur, Ashar, Maghrib, Isya)
+- Nama_Imam
+- Status_Kehadiran
+
+## 10. JadwalKhatib
+Jadwal khutbah jumat / idain.
+- ID_Jadwal_Khatib (Primary Key)
+- Tanggal
+- Nama_Khatib
+- Tema_Khutbah
+- Status_Kehadiran
+
+## 11. JadwalMuadzin
+Jadwal muadzin harian.
+- ID_Jadwal_Muadzin (Primary Key)
+- Tanggal
+- Waktu_Salat
+- Nama_Muadzin
+- Status_Kehadiran
+
+## 12. Inventaris
+Pencatatan aset masjid.
+- ID_Barang (Primary Key)
+- Nama_Barang
+- Kategori (Elektronik, Perlengkapan, Bangunan, Kendaraan)
+- Jumlah
+- Kondisi (Baik, Rusak Ringan, Rusak Berat)
+- Tanggal_Beli
+- Lokasi_Penyimpanan
+
+## 13. Pengumuman
+Teks pengumuman yang akan berjalan (ticker) di Mode TV atau halaman publik.
+- ID_Pengumuman (Primary Key)
+- Tanggal_Mulai
+- Tanggal_Akhir
+- Judul
+- Isi_Pengumuman
+- Status_Tampil (Ya/Tidak)
+
+## 14. SuratMasuk
+Arsip surat menyurat masuk.
+- ID_SuratM (Primary Key)
+- No_Surat
+- Tanggal_Surat
+- Tanggal_Terima
+- Pengirim
+- Perihal
+- File_Link (Link Google Drive)
+
+## 15. SuratKeluar
+Arsip surat menyurat keluar.
+- ID_SuratK (Primary Key)
+- No_Surat
+- Tanggal_Surat
+- Tujuan
+- Perihal
+- File_Link (Link Google Drive)
+
+## 16. Dokumentasi
+Album galeri kegiatan masjid.
+- ID_Dok (Primary Key)
+- Nama_Kegiatan
+- Tanggal
+- Deskripsi
+- Image_URL (Link Gambar Google Drive/Cloud)
+
+## 17. AuditLog
+Mencatat segala aktivitas CRUD di sistem.
+- ID_Log (Primary Key)
+- Timestamp
+- ID_User (Yang melakukan aktivitas)
+- Aksi (INSERT, UPDATE, DELETE, LOGIN)
+- Tabel_Terkait
+- Keterangan_Aksi
+
+## 18. Backup
+Log file backup Google Sheets (bila diotomasi).
+- ID_Backup (Primary Key)
+- Timestamp
+- Status_Backup
+- Link_File
