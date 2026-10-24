@@ -1,37 +1,47 @@
 "use client";
 
 import Link from "next/link";
+import { Menu, Globe, Calendar, UserCheck } from "lucide-react";
 
 export function Navbar({ toggleSidebar }: { toggleSidebar: () => void }) {
   return (
-    <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-gray-200 h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8 shadow-sm">
+    <header className="sticky top-0 z-30 bg-emerald-950/70 backdrop-blur-2xl border-b border-white/10 h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8 shadow-md">
       <div className="flex items-center gap-4">
         <button
           onClick={toggleSidebar}
-          className="lg:hidden p-2 rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          className="lg:hidden w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 text-emerald-100 hover:text-white flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-colors"
+          aria-label="Buka menu navigasi"
         >
-          ☰
+          <Menu size={20} />
         </button>
-        <h1 className="text-xl font-bold text-gray-800 hidden sm:block">Panel Pengurus</h1>
+        <div className="hidden sm:flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <h1 className="text-base font-bold text-white tracking-wide">
+            Panel Pengurus Masjid Wali Songo
+          </h1>
+        </div>
       </div>
 
       <div className="flex items-center gap-4">
-        <span 
-          className="text-sm font-medium text-gray-600 hidden md:block" 
+        <div 
+          className="hidden md:flex items-center gap-2 text-xs font-semibold text-emerald-200/80 bg-white/5 px-3.5 py-1.5 rounded-xl border border-white/10" 
           suppressHydrationWarning
         >
+          <Calendar size={14} className="text-yellow-400" />
           {new Date().toLocaleDateString("id-ID", {
             weekday: "long",
             year: "numeric",
             month: "long",
             day: "numeric",
           })}
-        </span>
+        </div>
+        
         <Link
           href="/"
-          className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 px-3 py-1.5 rounded-lg transition"
+          className="flex items-center gap-2 text-xs font-bold text-emerald-950 bg-gradient-to-r from-yellow-400 to-amber-400 hover:from-yellow-300 hover:to-amber-300 px-4 py-2 rounded-xl transition-all shadow-md shadow-yellow-500/20 active:scale-95"
         >
-          Lihat Web Publik
+          <Globe size={14} />
+          <span>Lihat Web Publik</span>
         </Link>
       </div>
     </header>

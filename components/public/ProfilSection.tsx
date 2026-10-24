@@ -1,127 +1,155 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { BookOpen, Users, GraduationCap, Heart, CheckCircle2 } from "lucide-react";
+import { BookOpen, Users, Heart, CheckCircle2, ShieldCheck, Compass, Sparkles } from "lucide-react";
+import Image from "next/image";
+import { MosqueIcon } from "@/components/ui/MosqueIcon";
 
 export function ProfilSection() {
   const fasilitas = [
-    "Ruang Salat Utama Full AC",
-    "Perpustakaan Islami & Ruang Baca",
-    "Aula Serbaguna untuk Pernikahan",
-    "Ambulans Gratis 24 Jam",
-    "Lembaga Amil Zakat Nasional (LAZNAS)",
-    "Klinik Kesehatan Umat"
+    "Ruang Salat Utama Full AC & Karpet Turki Tebal",
+    "Perpustakaan Khazanah Islamiyah & Ruang Baca",
+    "Aula Serbaguna Pertemuan & Akad Nikah Syar'i",
+    "Layanan Ambulans Siaga Gratis 24 Jam",
+    "Baitul Maal ZISWAF Terdaftar & Teraudit",
+    "Klinik Layanan Kesehatan Dasar Dhuafa",
+    "Area Wudhu Modern Ramah Difabel & Lansia",
+    "Sound System Berkualitas Tinggi & Jernih",
   ];
 
   return (
-    <section id="profil" className="py-24 bg-white relative overflow-hidden">
-      {/* Background Decor */}
-      <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-emerald-50 rounded-full blur-3xl opacity-50" />
-      <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 bg-yellow-50 rounded-full blur-3xl opacity-50" />
-
+    <section id="profil" className="py-24 relative overflow-hidden">
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <motion.span 
-            initial={{ opacity: 0, y: 20 }}
+        
+        {/* Section Header */}
+        <div className="text-center max-w-3xl mx-auto mb-20">
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-emerald-600 font-bold tracking-widest uppercase text-sm"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-900/60 border border-emerald-500/30 text-yellow-400 text-xs font-bold uppercase tracking-widest mb-4 backdrop-blur-xl"
           >
-            Tentang Kami
-          </motion.span>
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
+            <MosqueIcon size={16} variant="outline" className="text-yellow-400" />
+            Mengenal Masjid Wali Songo
+          </motion.div>
+          
+          <motion.h2
+            initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-3xl md:text-5xl font-extrabold text-emerald-950 mt-3 mb-6"
+            className="text-3xl sm:text-5xl font-black text-white tracking-tight mb-6"
           >
-            Lebih Dari Sekadar Tempat Ibadah
+            Pusat Ibadah, Khidmah & <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-500">
+              Peradaban Luhur di Pamekasan
+            </span>
           </motion.h2>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
+
+          <motion.p
+            initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed"
+            className="text-base sm:text-lg text-emerald-100/80 leading-relaxed font-normal"
           >
-            Masjid Wali Songo hadir sebagai mercusuar peradaban Islam di jantung Pamekasan. Kami berkomitmen menyelenggarakan kegiatan dakwah yang menyejukkan, mengelola dana umat dengan transparan, dan menyediakan fasilitas terbaik untuk kesejahteraan jamaah.
+            Masjid Wali Songo di Sakaddu Barat, Desa Bungbaruh, hadir melayani umat dengan memadukan nilai keagungan ajaran para wali songo nusantara, kenyamanan ibadah kontemporer, dan tata kelola profesional.
           </motion.p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          {/* Image Collage */}
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+        {/* Content Bento Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+          
+          {/* Left Column: Vision Glass Bento (7 Cols) */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="relative h-[500px] rounded-3xl overflow-hidden shadow-2xl"
+            className="lg:col-span-7 flex flex-col justify-between liquid-bento-card p-8 sm:p-10 relative overflow-hidden"
           >
-            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542816417-0983c9c9ad53?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center" />
-            <div className="absolute inset-0 bg-emerald-900/20" />
-            
-            <div className="absolute bottom-6 left-6 right-6 bg-white/90 backdrop-blur-md rounded-2xl p-6 shadow-lg border border-white/50">
-              <h3 className="text-xl font-bold text-emerald-950 mb-2">Visi Kami</h3>
-              <p className="text-gray-700 leading-relaxed font-medium">
-                Menjadi percontohan masjid mandiri yang memakmurkan dan dimakmurkan oleh jamaahnya berlandaskan manhaj Ahlussunnah wal Jama'ah.
+            <div className="relative z-10">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-yellow-400/10 border border-yellow-400/30 text-yellow-300 text-xs font-bold uppercase tracking-wider mb-6">
+                <Compass size={14} />
+                Visi & Manhaj Perjuangan
+              </div>
+              
+              <h3 className="text-2xl sm:text-3xl font-extrabold text-white mb-4 leading-snug">
+                "Menjadi pusat percontohan masjid yang mandiri, menyejukkan hati umat, dan memakmurkan masyarakat berlandaskan Ahlussunnah wal Jama'ah."
+              </h3>
+              
+              <p className="text-emerald-100/80 text-sm sm:text-base leading-relaxed mb-8">
+                Kami meyakini masjid bukan sekadar tempat salat lima waktu, melainkan episentrum kebangkitan ilmu, santunan sosial bagi fakir miskin, dan pembinaan generasi muda yang berakhlakul karimah.
               </p>
+            </div>
+
+            {/* Pillars */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-6 border-t border-white/10 relative z-10">
+              <div className="flex gap-4 items-start p-4 rounded-2xl bg-white/5 border border-white/10">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center flex-shrink-0 border border-emerald-400/30">
+                  <BookOpen size={22} />
+                </div>
+                <div>
+                  <h4 className="font-bold text-white text-sm mb-1">Dakwah & Ta'lim</h4>
+                  <p className="text-xs text-emerald-100/70 leading-relaxed">
+                    Kajian bersanad, tahsin Qur'an, dan kajian tematik fiqih muamalah.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-4 items-start p-4 rounded-2xl bg-white/5 border border-white/10">
+                <div className="w-12 h-12 rounded-2xl bg-yellow-500/20 text-yellow-300 flex items-center justify-center flex-shrink-0 border border-yellow-400/30">
+                  <Heart size={22} />
+                </div>
+                <div>
+                  <h4 className="font-bold text-white text-sm mb-1">Bakti Sosial Umat</h4>
+                  <p className="text-xs text-emerald-100/70 leading-relaxed">
+                    Beasiswa santri yatim, sembako janda dhuafa, dan posko bencana.
+                  </p>
+                </div>
+              </div>
             </div>
           </motion.div>
 
-          {/* Features / Pillars */}
-          <div className="space-y-10">
-            <motion.div 
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="flex gap-5"
-            >
-              <div className="flex-shrink-0 w-14 h-14 bg-emerald-100 rounded-2xl flex items-center justify-center text-emerald-600 shadow-inner">
-                <BookOpen size={28} />
+          {/* Right Column: Facilities & Excellence (5 Cols) */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="lg:col-span-5 liquid-bento-card p-8 sm:p-10 flex flex-col justify-between"
+          >
+            <div>
+              <div className="flex items-center gap-2 text-yellow-400 mb-4">
+                <Sparkles size={18} />
+                <h4 className="text-xs font-bold uppercase tracking-widest text-emerald-300">
+                  Fasilitas & Layanan Prima
+                </h4>
               </div>
-              <div>
-                <h4 className="text-xl font-bold text-gray-900 mb-2">Pendidikan & Dakwah</h4>
-                <p className="text-gray-600 leading-relaxed">Menyelenggarakan kajian rutin, tahsin qur'an, dan bimbingan pranikah secara komprehensif.</p>
-              </div>
-            </motion.div>
 
-            <motion.div 
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="flex gap-5"
-            >
-              <div className="flex-shrink-0 w-14 h-14 bg-yellow-100 rounded-2xl flex items-center justify-center text-yellow-600 shadow-inner">
-                <Heart size={28} />
-              </div>
-              <div>
-                <h4 className="text-xl font-bold text-gray-900 mb-2">Sosial & Kemanusiaan</h4>
-                <p className="text-gray-600 leading-relaxed">Penyaluran beasiswa santri, bantuan musibah, dan sembako dhuafa melalui baitul maal terakreditasi.</p>
-              </div>
-            </motion.div>
+              <h3 className="text-2xl font-bold text-white mb-6">
+                Kenyamanan Penuh untuk Segenap Jamaah
+              </h3>
 
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="bg-gray-50 rounded-2xl p-8 border border-gray-100 shadow-sm mt-8"
-            >
-              <h4 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <CheckCircle2 className="text-emerald-500" /> Fasilitas Unggulan
-              </h4>
-              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {fasilitas.map((item, index) => (
-                  <li key={index} className="flex items-center gap-2 text-gray-600 text-sm font-medium">
-                    <div className="w-1.5 h-1.5 rounded-full bg-yellow-400" />
-                    {item}
-                  </li>
+              <div className="space-y-3">
+                {fasilitas.map((item, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center gap-3 p-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
+                  >
+                    <CheckCircle2 size={16} className="text-yellow-400 flex-shrink-0" />
+                    <span className="text-xs sm:text-sm font-medium text-emerald-100">
+                      {item}
+                    </span>
+                  </div>
                 ))}
-              </ul>
-            </motion.div>
+              </div>
+            </div>
 
-          </div>
+            <div className="mt-8 pt-6 border-t border-white/10 flex items-center gap-3 text-xs text-emerald-300 font-medium">
+              <ShieldCheck size={18} className="text-yellow-400" />
+              <span>Standar kebersihan & sanitasi terjaga 24 jam</span>
+            </div>
+          </motion.div>
+
         </div>
       </div>
     </section>

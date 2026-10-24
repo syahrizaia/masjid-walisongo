@@ -1,32 +1,99 @@
 "use client";
 
 import { useState } from "react";
+import { HandCoins, Printer, X, Plus, HeartHandshake, FileCheck, CheckCircle2 } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { MosqueIcon } from "@/components/ui/MosqueIcon";
+
+interface DonasiItem {
+  id: number;
+  tanggal: string;
+  donatur: string;
+  kategori: string;
+  tipe: string;
+  nilai: string;
+  ket: string;
+}
 
 export default function DonasiPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isKwitansiOpen, setIsKwitansiOpen] = useState(false);
   const [donasiTipe, setDonasiTipe] = useState("Uang");
+  
+  // Current active receipt data
+  const [activeReceipt, setActiveReceipt] = useState<DonasiItem>({
+    id: 1,
+    tanggal: "2026-09-04",
+    donatur: "H. Abdullah",
+    kategori: "Infaq Pembangunan",
+    tipe: "Uang",
+    nilai: "Rp 1.000.000",
+    ket: "Pembangunan menara & renovasi kubah",
+  });
+
+  const [donasiList, setDonasiList] = useState<DonasiItem[]>([
+    {
+      id: 1,
+      tanggal: "2026-09-04",
+      donatur: "H. Abdullah",
+      kategori: "Infaq Pembangunan",
+      tipe: "Uang",
+      nilai: "Rp 1.000.000",
+      ket: "Pembangunan menara & renovasi kubah",
+    },
+    {
+      id: 2,
+      tanggal: "2026-09-03",
+      donatur: "Hamba Allah",
+      kategori: "Sedekah Subuh",
+      tipe: "Uang",
+      nilai: "Rp 250.000",
+      ket: "Operasional dhuafa",
+    },
+    {
+      id: 3,
+      tanggal: "2026-09-02",
+      donatur: "Ibu Hj. Maryam",
+      kategori: "Wakaf Aset",
+      tipe: "Barang",
+      nilai: "10 Rol Karpet Masjid",
+      ket: "Untuk aula serbaguna",
+    },
+  ]);
+
+  const [formData, setFormData] = useState({
+    tanggal: new Date().toISOString().split("T")[0],
+    nama: "",
+    kategori: "Infaq",
+    tipe: "Uang",
+    nilai: "",
+    ket: "",
+  });
 
   const openModalDonasi = () => setIsModalOpen(true);
   const closeModalDonasi = () => setIsModalOpen(false);
 
-  const toggleDonasiTipe = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setDonasiTipe(e.target.value);
-  };
-
   const handleSaveDonasi = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulasi save
+    const newItem: DonasiItem = {
+      id: donasiList.length + 1,
+      tanggal: formData.tanggal,
+      donatur: formData.nama,
+      kategori: formData.kategori,
+      tipe: formData.tipe,
+      nilai: formData.tipe === "Uang" ? `Rp ${formData.nilai}` : formData.nilai,
+      ket: formData.ket || "-",
+    };
+
+    setDonasiList([newItem, ...donasiList]);
+    setActiveReceipt(newItem);
     setIsModalOpen(false);
     setIsKwitansiOpen(true);
   };
 
   const cetakKwitansi = () => {
     window.print();
-  };
-
-  const tutupKwitansi = () => {
-    setIsKwitansiOpen(false);
   };
 
   return (
@@ -40,41 +107,75 @@ export default function DonasiPage() {
                 left: 0;
                 top: 0;
                 width: 100%;
+                color: #000 !important;
+                background: #fff !important;
                 box-shadow: none !important;
             }
             .no-print { display: none !important; }
         }
       `}} />
 
-      <div className="w-full animate-[fadeIn_0.5s_ease-in-out]">
-        <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="w-full">
+        {/* Header */}
+        <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h2 className="text-2xl font-bold text-gray-800">Manajemen Donasi</h2>
-            <p className="text-gray-500 text-sm">Penerimaan Zakat, Infaq, Sadaqah, dan Wakaf (ZISWAF).</p>
+            <h2 className="text-3xl font-black text-white tracking-tight">Manajemen Donasi & ZISWAF</h2>
+            <p className="text-xs text-emerald-200/70 mt-1 font-medium">
+              Penerimaan resmi Zakat, Infaq, Sadaqah, dan Wakaf beserta penerbitan kwitansi sah.
+            </p>
           </div>
-          <button 
-            onClick={openModalDonasi} 
-            className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg font-medium shadow transition-colors text-sm md:text-base"
-          >
-            <i className="fa-solid fa-hand-holding-dollar mr-1"></i> Terima Donasi Baru
-          </button>
+          <Button variant="secondary" onClick={openModalDonasi}>
+            <Plus size={16} />
+            Terima Donasi Baru
+          </Button>
         </div>
 
         {/* Tabel Donasi */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="liquid-bento-card overflow-hidden">
+          <div className="p-6 border-b border-white/10 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <HandCoins size={18} className="text-yellow-400" />
+              <h3 className="text-base font-bold text-white">Daftar Penerimaan ZISWAF</h3>
+            </div>
+            <span className="text-xs text-emerald-200/70">{donasiList.length} Penerimaan Tercatat</span>
+          </div>
+
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse min-w-[700px]">
               <thead>
-                <tr className="bg-gray-50 text-gray-500 text-sm border-b">
-                  <th className="py-3 px-6 font-medium">Tanggal</th>
-                  <th className="py-3 px-6 font-medium">Donatur</th>
-                  <th className="py-3 px-6 font-medium">Kategori</th>
-                  <th className="py-3 px-6 font-medium">Nominal / Aset</th>
-                  <th className="py-3 px-6 font-medium text-center">Aksi</th>
+                <tr className="bg-white/5 text-emerald-200 text-xs uppercase tracking-wider border-b border-white/10">
+                  <th className="py-4 px-6 font-bold">Tanggal</th>
+                  <th className="py-4 px-6 font-bold">Nama Donatur</th>
+                  <th className="py-4 px-6 font-bold">Kategori</th>
+                  <th className="py-4 px-6 font-bold">Bentuk / Nilai</th>
+                  <th className="py-4 px-6 font-bold text-center">Kwitansi</th>
                 </tr>
               </thead>
-              <tbody id="tbl-donasi-body" className="text-sm divide-y divide-gray-100">
-                <tr><td colSpan={5} className="py-8 text-center text-gray-400">Memuat data donasi...</td></tr>
+              <tbody className="text-sm divide-y divide-white/5">
+                {donasiList.map((item) => (
+                  <tr key={item.id} className="hover:bg-white/5 transition-colors">
+                    <td className="py-4 px-6 font-mono text-xs text-emerald-100">{item.tanggal}</td>
+                    <td className="py-4 px-6 font-bold text-white">{item.donatur}</td>
+                    <td className="py-4 px-6">
+                      <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-yellow-400/20 text-yellow-300 border border-yellow-400/30">
+                        {item.kategori}
+                      </span>
+                    </td>
+                    <td className="py-4 px-6 font-mono font-bold text-emerald-300">{item.nilai}</td>
+                    <td className="py-4 px-6 text-center">
+                      <button
+                        onClick={() => {
+                          setActiveReceipt(item);
+                          setIsKwitansiOpen(true);
+                        }}
+                        className="p-2 rounded-xl bg-white/10 hover:bg-yellow-400 hover:text-emerald-950 text-white transition-all text-xs font-semibold inline-flex items-center gap-1.5"
+                      >
+                        <Printer size={14} />
+                        Cetak
+                      </button>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
@@ -83,91 +184,181 @@ export default function DonasiPage() {
 
       {/* Modal Tambah Donasi */}
       {isModalOpen && (
-        <div id="modal-donasi" className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-50 flex items-center justify-center">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 overflow-hidden animate-[fadeIn_0.2s_ease-out]">
-            <div className="bg-gradient-to-r from-yellow-600 to-yellow-500 p-4 flex justify-between items-center text-white">
-              <h3 className="font-bold text-lg">Input Penerimaan Donasi</h3>
-              <button onClick={closeModalDonasi} className="text-white/70 hover:text-white">
-                <i className="fa-solid fa-times text-xl">✖</i>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="liquid-bento-card bg-emerald-950/90 border border-white/20 w-full max-w-lg overflow-hidden shadow-2xl">
+            <div className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-emerald-900 p-5 flex justify-between items-center text-white border-b border-white/10">
+              <h3 className="font-bold text-lg text-yellow-300 flex items-center gap-2">
+                <HeartHandshake size={18} />
+                Input Penerimaan Donasi
+              </h3>
+              <button onClick={closeModalDonasi} className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center">
+                <X size={16} />
               </button>
             </div>
-            <form id="form-donasi" className="p-6 space-y-4" onSubmit={handleSaveDonasi}>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Tanggal</label>
-                <input type="date" id="dn-tanggal" className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none" required />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Nama Donatur</label>
-                <input type="text" id="dn-nama" className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none" placeholder="Hamba Allah / Nama Terang" required />
-              </div>
+            
+            <form className="p-6 space-y-4" onSubmit={handleSaveDonasi}>
+              <Input
+                type="date"
+                label="Tanggal Donasi"
+                value={formData.tanggal}
+                onChange={(e) => setFormData({ ...formData, tanggal: e.target.value })}
+                required
+              />
+              <Input
+                type="text"
+                label="Nama Donatur"
+                placeholder="Hamba Allah / Nama Terang Dermawan"
+                value={formData.nama}
+                onChange={(e) => setFormData({ ...formData, nama: e.target.value })}
+                required
+              />
+              
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
-                  <select id="dn-kategori" className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none" required>
-                    <option value="Infaq">Infaq</option>
-                    <option value="Sadaqah">Sadaqah</option>
-                    <option value="Zakat">Zakat</option>
-                    <option value="Wakaf">Wakaf</option>
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-bold text-emerald-100 uppercase tracking-wider">Kategori ZISWAF</label>
+                  <select
+                    className="flex h-12 w-full rounded-2xl bg-black/40 border border-white/15 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                    value={formData.kategori}
+                    onChange={(e) => setFormData({ ...formData, kategori: e.target.value })}
+                  >
+                    <option value="Infaq" className="bg-emerald-950">Infaq</option>
+                    <option value="Sadaqah" className="bg-emerald-950">Sadaqah</option>
+                    <option value="Zakat" className="bg-emerald-950">Zakat</option>
+                    <option value="Wakaf" className="bg-emerald-950">Wakaf</option>
                   </select>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Bentuk Donasi</label>
-                  <select id="dn-tipe" className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none" onChange={toggleDonasiTipe} required>
-                    <option value="Uang">Uang (Rp)</option>
-                    <option value="Barang">Barang / Aset</option>
+
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-bold text-emerald-100 uppercase tracking-wider">Bentuk Donasi</label>
+                  <select
+                    className="flex h-12 w-full rounded-2xl bg-black/40 border border-white/15 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                    value={formData.tipe}
+                    onChange={(e) => {
+                      setFormData({ ...formData, tipe: e.target.value });
+                      setDonasiTipe(e.target.value);
+                    }}
+                  >
+                    <option value="Uang" className="bg-emerald-950">Uang Tunai / Transfer</option>
+                    <option value="Barang" className="bg-emerald-950">Barang / Aset Fisik</option>
                   </select>
                 </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1" id="lbl-dn-nilai">{donasiTipe === 'Uang' ? 'Nominal (Rp)' : 'Nilai Barang / Aset'}</label>
-                <input type="text" id="dn-nilai" className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none" placeholder="Contoh: 100000 / 10 Sak Semen" required />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Keterangan Tambahan</label>
-                <input type="text" id="dn-ket" className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none" placeholder="Opsional (cth: untuk pembangunan atap)" />
-              </div>
-              <div className="pt-2">
-                <button type="submit" id="btn-save-dn" className="w-full bg-yellow-600 hover:bg-yellow-500 text-white font-bold py-2.5 rounded-lg shadow transition-colors">Simpan & Terbitkan Kwitansi</button>
+
+              <Input
+                type="text"
+                label={donasiTipe === "Uang" ? "Nominal (Rp)" : "Rincian Barang / Aset"}
+                placeholder={donasiTipe === "Uang" ? "Contoh: 500000" : "Contoh: 10 Sak Semen Gresik"}
+                value={formData.nilai}
+                onChange={(e) => setFormData({ ...formData, nilai: e.target.value })}
+                required
+              />
+
+              <Input
+                type="text"
+                label="Peruntukan / Keterangan"
+                placeholder="Cth: Infaq anak yatim / pembangunan kubah"
+                value={formData.ket}
+                onChange={(e) => setFormData({ ...formData, ket: e.target.value })}
+              />
+
+              <div className="pt-4 flex justify-end gap-3 border-t border-white/10">
+                <Button variant="outline" type="button" onClick={closeModalDonasi}>
+                  Batal
+                </Button>
+                <Button variant="secondary" type="submit">
+                  Simpan & Terbitkan Kwitansi
+                </Button>
               </div>
             </form>
           </div>
         </div>
       )}
 
-      {/* Modal Cetak Kwitansi */}
+      {/* Modal Cetak Kwitansi Resmi */}
       {isKwitansiOpen && (
-        <div id="modal-kwitansi" className="fixed inset-0 bg-gray-900/80 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg shadow-2xl p-8 w-full max-w-2xl relative" id="print-area">
-            <div className="border-b-4 border-emerald-600 pb-4 mb-6 text-center">
-              <h2 className="text-2xl font-bold text-emerald-800 tracking-wide uppercase">Kwitansi Tanda Terima</h2>
-              <p className="text-sm font-medium text-gray-600 mt-1">Masjid Wali Songo - Bungbaruh, Kadur, Kab. Pamekasan</p>
-            </div>
-            <div className="space-y-4 text-gray-800 text-base">
-              <div className="flex"><span className="w-40 font-bold">No. Referensi</span><span className="mr-2">:</span> <span id="kw-no" className="font-mono text-gray-600">DON-001</span></div>
-              <div className="flex"><span className="w-40 font-bold">Telah terima dari</span><span className="mr-2">:</span> <span id="kw-nama" className="font-semibold text-lg uppercase">Hamba Allah</span></div>
-              <div className="flex"><span className="w-40 font-bold">Kategori / Jenis</span><span className="mr-2">:</span> <span id="kw-kategori">Infaq</span></div>
-              <div className="flex"><span className="w-40 font-bold">Uang / Barang</span><span className="mr-2">:</span> <span id="kw-nilai" className="font-bold text-xl text-emerald-800 bg-green-50 px-3 py-1 rounded">Rp 100.000</span></div>
-              <div className="flex"><span className="w-40 font-bold">Keterangan</span><span className="mr-2">:</span> <span id="kw-ket" className="italic">-</span></div>
-            </div>
-            <div className="mt-12 flex justify-between text-center text-sm font-medium text-gray-700">
-              <div>
-                <br /><br /><br />
-                <p>( <span id="kw-donatur-ttd" className="font-bold px-8 text-gray-800">Donatur</span> )</p>
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl shadow-2xl p-8 sm:p-10 w-full max-w-2xl relative text-gray-900 border-4 border-emerald-900/10" id="print-area">
+            {/* Kwitansi Header */}
+            <div className="border-b-2 border-emerald-800 pb-5 mb-6 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-emerald-900 rounded-2xl flex items-center justify-center text-yellow-400">
+                  <MosqueIcon size={26} variant="solid" className="text-yellow-400" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-black text-emerald-900 tracking-wide uppercase">
+                    KWITANSI TANDA TERIMA ZISWAF
+                  </h2>
+                  <p className="text-xs font-semibold text-gray-600">
+                    Masjid Wali Songo - Sakaddu Barat, Kadur, Pamekasan
+                  </p>
+                </div>
               </div>
-              <div>
-                <p>Pamekasan, <span id="kw-tgl" className="font-semibold">04 September 2026</span></p>
-                <br /><br />
-                <p>( <span className="font-bold px-8 text-emerald-800">Pengurus / Takmir</span> )</p>
+              <div className="text-right">
+                <span className="text-xs font-mono font-bold text-gray-400">NO: DON-00{activeReceipt.id}</span>
               </div>
             </div>
-            <div className="absolute bottom-4 left-0 right-0 text-center text-xs text-gray-400 italic font-serif">
-              Jazakumullahu khairan katsiran. Semoga Allah membalas dengan kebaikan yang berlipat ganda.
+
+            {/* Kwitansi Details */}
+            <div className="space-y-4 text-sm text-gray-800">
+              <div className="flex">
+                <span className="w-36 font-semibold text-gray-600">Telah Terima Dari</span>
+                <span className="mr-3 font-bold">:</span>
+                <span className="font-bold text-lg text-emerald-950 uppercase">{activeReceipt.donatur}</span>
+              </div>
+              <div className="flex">
+                <span className="w-36 font-semibold text-gray-600">Kategori ZISWAF</span>
+                <span className="mr-3 font-bold">:</span>
+                <span className="font-bold text-emerald-800">{activeReceipt.kategori}</span>
+              </div>
+              <div className="flex items-center">
+                <span className="w-36 font-semibold text-gray-600">Jumlah / Wujud</span>
+                <span className="mr-3 font-bold">:</span>
+                <span className="font-black text-xl text-emerald-900 bg-emerald-50 px-4 py-1 rounded-xl border border-emerald-200">
+                  {activeReceipt.nilai}
+                </span>
+              </div>
+              <div className="flex">
+                <span className="w-36 font-semibold text-gray-600">Peruntukan / Ket</span>
+                <span className="mr-3 font-bold">:</span>
+                <span className="italic text-gray-700">{activeReceipt.ket || "-"}</span>
+              </div>
             </div>
-          </div>
-          
-          <div className="absolute top-4 right-4 flex gap-2 no-print">
-            <button onClick={cetakKwitansi} className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow-lg font-medium transition-colors"><i className="fa-solid fa-print mr-1"></i> Cetak Dokumen</button>
-            <button onClick={tutupKwitansi} className="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg shadow-lg font-medium transition-colors"><i className="fa-solid fa-times mr-1"></i> Tutup</button>
+
+            {/* Signature Area */}
+            <div className="mt-12 grid grid-cols-2 text-center text-xs text-gray-700 font-medium">
+              <div>
+                <p>Tanda Tangan Dermawan</p>
+                <div className="h-16" />
+                <p className="font-bold text-gray-900 underline">( {activeReceipt.donatur} )</p>
+              </div>
+              <div>
+                <p>Pamekasan, {activeReceipt.tanggal}</p>
+                <div className="h-16" />
+                <p className="font-bold text-emerald-900 underline">( Takmir Masjid Wali Songo )</p>
+              </div>
+            </div>
+
+            {/* Footer Islamic Doa */}
+            <div className="mt-8 pt-4 border-t border-gray-200 text-center text-[11px] text-gray-500 italic">
+              "Jazakumullahu khairan katsiran. Semoga Allah membalas dengan pahala berlipat ganda dan membersihkan harta Anda."
+            </div>
+
+            {/* Action Bar (Screen Only) */}
+            <div className="mt-6 pt-4 border-t border-gray-100 flex justify-end gap-3 no-print">
+              <button
+                onClick={cetakKwitansi}
+                className="bg-emerald-700 hover:bg-emerald-800 text-white px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-colors flex items-center gap-2 shadow"
+              >
+                <Printer size={16} />
+                Cetak Dokumen
+              </button>
+              <button
+                onClick={() => setIsKwitansiOpen(false)}
+                className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-colors"
+              >
+                Tutup
+              </button>
+            </div>
           </div>
         </div>
       )}

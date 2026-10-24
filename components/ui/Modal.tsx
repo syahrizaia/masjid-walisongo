@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
+import { X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export interface ModalProps {
   isOpen: boolean;
@@ -23,7 +25,7 @@ export function Modal({ isOpen, onClose, title, children, footer }: ModalProps) 
     
     if (isOpen) {
       document.addEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "hidden"; // Prevent scrolling behind modal
+      document.body.style.overflow = "hidden";
     }
     
     return () => {
@@ -39,50 +41,54 @@ export function Modal({ isOpen, onClose, title, children, footer }: ModalProps) 
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-gray-900/50 backdrop-blur-sm animate-[fadeIn_0.2s_ease-out]"
-      onClick={handleBackdropClick}
-      aria-modal="true"
-      role="dialog"
-      aria-labelledby={title ? "modal-title" : undefined}
-    >
-      <div 
-        ref={modalRef}
-        className="bg-white rounded-2xl shadow-xl w-full max-w-md md:max-w-lg lg:max-w-xl overflow-hidden flex flex-col max-h-[90vh]"
-      >
-        {/* Header */}
-        <div className="bg-emerald-900 px-6 py-4 flex justify-between items-center text-white">
-          {title && (
-            <h3 id="modal-title" className="font-bold text-lg">
-              {title}
-            </h3>
-          )}
-          <button
-            onClick={onClose}
-            className="text-emerald-100 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-emerald-900 rounded-md ml-auto"
-            aria-label="Close modal"
+    <AnimatePresence>
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-md"
+          onClick={handleBackdropClick}
+          aria-modal="true"
+          role="dialog"
+          aria-labelledby={title ? "modal-title" : undefined}
+        >
+          <motion.div 
+            ref={modalRef}
+            initial={{ opacity: 0, scale: 0.95, y: 15 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 15 }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="liquid-bento-card bg-emerald-950/85 backdrop-blur-3xl border border-white/20 text-white shadow-2xl w-full max-w-md md:max-w-lg lg:max-w-xl overflow-hidden flex flex-col max-h-[90vh]"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+            {/* Header */}
+            <div className="bg-gradient-to-r from-emerald-900/90 via-emerald-800/80 to-emerald-900/90 border-b border-white/10 px-7 py-5 flex justify-between items-center text-white">
+              {title && (
+                <h3 id="modal-title" className="font-bold text-xl tracking-wide flex items-center gap-2 text-yellow-300">
+                  {title}
+                </h3>
+              )}
+              <button
+                onClick={onClose}
+                className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-emerald-100 hover:text-white transition-all flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-yellow-400 ml-auto"
+                aria-label="Tutup jendela modal"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            
+            {/* Body */}
+            <div className="p-7 overflow-y-auto space-y-4">
+              {children}
+            </div>
+            
+            {/* Footer */}
+            {footer && (
+              <div className="px-7 py-5 bg-black/30 border-t border-white/10 flex justify-end gap-3 rounded-b-3xl">
+                {footer}
+              </div>
+            )}
+          </motion.div>
         </div>
-        
-        {/* Body */}
-        <div className="p-6 overflow-y-auto">
-          {children}
-        </div>
-        
-        {/* Footer */}
-        {footer && (
-          <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-3 rounded-b-2xl">
-            {footer}
-          </div>
-        )}
-      </div>
-    </div>
+      )}
+    </AnimatePresence>
   );
 }

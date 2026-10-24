@@ -1,47 +1,135 @@
 "use client";
 
 import { useState } from "react";
+import { Package, PackagePlus, X, ShieldCheck, Tag } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+
+interface InventarisItem {
+  id: number;
+  kode: string;
+  nama: string;
+  jumlah: number;
+  kondisi: string;
+  sumber: string;
+}
 
 export default function InventarisPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [itemList, setItemList] = useState<InventarisItem[]>([
+    {
+      id: 1,
+      kode: "INV-001",
+      nama: "Genset Silent 5000W Krisbow",
+      jumlah: 1,
+      kondisi: "Baik",
+      sumber: "Beli Kas Masjid",
+    },
+    {
+      id: 2,
+      kode: "INV-002",
+      nama: "Mic Wireless Shure Beta 58",
+      jumlah: 4,
+      kondisi: "Baik",
+      sumber: "Wakaf Hamba Allah",
+    },
+    {
+      id: 3,
+      kode: "INV-003",
+      nama: "Vacuum Cleaner Karpet Karcher",
+      jumlah: 2,
+      kondisi: "Baik",
+      sumber: "Beli Kas Masjid",
+    },
+  ]);
+
+  const [formData, setFormData] = useState({
+    nama: "",
+    jumlah: "1",
+    kondisi: "Baik",
+    sumber: "",
+  });
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
   const handleSaveInventaris = (e: React.FormEvent) => {
     e.preventDefault();
-    alert("Inventaris disimpan");
+    setItemList([
+      ...itemList,
+      {
+        id: itemList.length + 1,
+        kode: `INV-00${itemList.length + 1}`,
+        nama: formData.nama,
+        jumlah: parseInt(formData.jumlah, 10) || 1,
+        kondisi: formData.kondisi,
+        sumber: formData.sumber,
+      },
+    ]);
     closeModal();
+    setFormData({
+      nama: "",
+      jumlah: "1",
+      kondisi: "Baik",
+      sumber: "",
+    });
   };
 
   return (
     <>
-      <div className="w-full animate-[fadeIn_0.5s_ease-in-out]">
-        <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="w-full">
+        <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h2 className="text-2xl font-bold text-gray-800">Inventaris Masjid</h2>
-            <p className="text-gray-500 text-sm">Pencatatan barang dan aset milik masjid.</p>
+            <h2 className="text-3xl font-black text-white tracking-tight">Inventaris & Aset Masjid</h2>
+            <p className="text-xs text-emerald-200/70 mt-1 font-medium">
+              Pencatatan barang berharga, perlengkapan sound system, dan fasilitas wakaf umat.
+            </p>
           </div>
-          <button onClick={openModal} className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium shadow transition-colors text-sm md:text-base">
-            <i className="fa-solid fa-box mr-1"></i> Tambah Inventaris
-          </button>
+          <Button variant="secondary" onClick={openModal}>
+            <PackagePlus size={16} />
+            Tambah Aset Baru
+          </Button>
         </div>
 
         {/* Tabel Inventaris */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="liquid-bento-card overflow-hidden">
+          <div className="p-6 border-b border-white/10 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Package size={18} className="text-yellow-400" />
+              <h3 className="text-base font-bold text-white">Daftar Aset & Perlengkapan</h3>
+            </div>
+            <span className="text-xs text-emerald-200/70">{itemList.length} Barang Terdaftar</span>
+          </div>
+
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse min-w-[700px]">
               <thead>
-                <tr className="bg-gray-50 text-gray-500 text-sm border-b">
-                  <th className="py-3 px-6 font-medium">Kode Barang</th>
-                  <th className="py-3 px-6 font-medium">Nama Barang</th>
-                  <th className="py-3 px-6 font-medium">Jumlah</th>
-                  <th className="py-3 px-6 font-medium">Kondisi</th>
-                  <th className="py-3 px-6 font-medium">Sumber / Donatur</th>
+                <tr className="bg-white/5 text-emerald-200 text-xs uppercase tracking-wider border-b border-white/10">
+                  <th className="py-4 px-6 font-bold">Kode Barang</th>
+                  <th className="py-4 px-6 font-bold">Nama Barang</th>
+                  <th className="py-4 px-6 font-bold text-center">Jumlah</th>
+                  <th className="py-4 px-6 font-bold">Kondisi</th>
+                  <th className="py-4 px-6 font-bold">Sumber Pengadaan</th>
                 </tr>
               </thead>
-              <tbody id="tbl-inventaris-body" className="text-sm divide-y divide-gray-100">
-                <tr><td colSpan={5} className="py-8 text-center text-gray-400">Memuat data...</td></tr>
+              <tbody className="text-sm divide-y divide-white/5">
+                {itemList.map((item) => (
+                  <tr key={item.id} className="hover:bg-white/5 transition-colors">
+                    <td className="py-4 px-6 font-mono text-xs text-yellow-400 font-bold">{item.kode}</td>
+                    <td className="py-4 px-6 font-bold text-white">{item.nama}</td>
+                    <td className="py-4 px-6 text-center font-mono font-bold text-emerald-100">{item.jumlah} Unit</td>
+                    <td className="py-4 px-6">
+                      <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
+                        item.kondisi === "Baik"
+                          ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
+                          : "bg-amber-500/20 text-amber-300 border border-amber-500/30"
+                      }`}>
+                        {item.kondisi}
+                      </span>
+                    </td>
+                    <td className="py-4 px-6 text-emerald-100/70">{item.sumber}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
@@ -50,39 +138,66 @@ export default function InventarisPage() {
 
       {/* Modal Tambah Inventaris */}
       {isModalOpen && (
-        <div id="modal-inventaris" className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-[fadeIn_0.2s_ease-out]">
-            <div className="bg-emerald-800 p-4 flex justify-between items-center text-white">
-              <h3 className="font-bold text-lg">Input Aset Baru</h3>
-              <button onClick={closeModal} className="text-white/70 hover:text-white">
-                <i className="fa-solid fa-times text-xl">✖</i>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="liquid-bento-card bg-emerald-950/90 border border-white/20 w-full max-w-md overflow-hidden shadow-2xl">
+            <div className="bg-gradient-to-r from-emerald-900 to-emerald-800 p-5 flex justify-between items-center text-white border-b border-white/10">
+              <h3 className="font-bold text-lg text-yellow-300 flex items-center gap-2">
+                <PackagePlus size={18} />
+                Input Aset Baru
+              </h3>
+              <button onClick={closeModal} className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center">
+                <X size={16} />
               </button>
             </div>
+            
             <form className="p-6 space-y-4" onSubmit={handleSaveInventaris}>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Nama Barang</label>
-                <input type="text" id="inv-nama" className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600 outline-none" required />
-              </div>
+              <Input
+                label="Nama Barang / Fasilitas"
+                placeholder="Cth: Sound Speaker Yamaha DXR15"
+                value={formData.nama}
+                onChange={(e) => setFormData({ ...formData, nama: e.target.value })}
+                required
+              />
+              
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Jumlah</label>
-                  <input type="number" id="inv-jumlah" className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600 outline-none" min="1" required />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Kondisi</label>
-                  <select id="inv-kondisi" className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600 outline-none" required>
-                    <option value="Baik">Baik</option>
-                    <option value="Rusak Ringan">Rusak Ringan</option>
-                    <option value="Rusak Berat">Rusak Berat</option>
+                <Input
+                  type="number"
+                  label="Jumlah (Unit)"
+                  min="1"
+                  value={formData.jumlah}
+                  onChange={(e) => setFormData({ ...formData, jumlah: e.target.value })}
+                  required
+                />
+                
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-bold text-emerald-100 uppercase tracking-wider">Kondisi</label>
+                  <select
+                    className="flex h-12 w-full rounded-2xl bg-black/40 border border-white/15 px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                    value={formData.kondisi}
+                    onChange={(e) => setFormData({ ...formData, kondisi: e.target.value })}
+                  >
+                    <option value="Baik" className="bg-emerald-950">Baik & Normal</option>
+                    <option value="Rusak Ringan" className="bg-emerald-950">Rusak Ringan</option>
+                    <option value="Rusak Berat" className="bg-emerald-950">Rusak Berat</option>
                   </select>
                 </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Sumber Barang</label>
-                <input type="text" id="inv-sumber" className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600 outline-none" placeholder="Beli / Wakaf dari Hamba Allah" required />
-              </div>
-              <div className="pt-2">
-                <button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg shadow transition-colors">Simpan Inventaris</button>
+
+              <Input
+                label="Sumber Pengadaan"
+                placeholder="Cth: Beli Kas / Wakaf Hamba Allah"
+                value={formData.sumber}
+                onChange={(e) => setFormData({ ...formData, sumber: e.target.value })}
+                required
+              />
+
+              <div className="pt-4 flex justify-end gap-3 border-t border-white/10">
+                <Button variant="outline" type="button" onClick={closeModal}>
+                  Batal
+                </Button>
+                <Button variant="secondary" type="submit">
+                  Simpan Aset
+                </Button>
               </div>
             </form>
           </div>

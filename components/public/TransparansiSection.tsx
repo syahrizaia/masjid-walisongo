@@ -1,101 +1,141 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { TrendingUp, Wallet, ArrowDownToLine, ArrowUpFromLine } from "lucide-react";
+import { TrendingUp, Wallet, ArrowDownToLine, ArrowUpFromLine, ShieldCheck, FileSpreadsheet } from "lucide-react";
+import Link from "next/link";
 
 export function TransparansiSection() {
   return (
-    <section className="py-24 bg-emerald-950 relative overflow-hidden text-white">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAzNHYtNGgtMnY0aC00djJoNHY0aDJ2LTRoNHYtMmgtNHzmMC0zMFYwaC0ydjRoLTR2Mmg0djRoMnYtNGg0Vi0yaC00ek02IDM0di00SDR2NEgwdjJoNHY0aDJ2LTRoNHYtMkg2ek02IDRWMEg0djRIMGYyaDR2NGgyVjZoNFY0SDZ6IiBmaWxsPSIjZmZmZmZmIiBmaWxsLW9wYWNpdHk9IjAuMDMiLz48L2c+PC9zdmc+')] pointer-events-none" />
-
+    <section id="transparansi" className="py-24 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="text-center mb-16">
-          <motion.span 
-            initial={{ opacity: 0, y: 20 }}
+        
+        {/* Section Header */}
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-yellow-400 font-bold tracking-widest uppercase text-sm"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-900/60 border border-emerald-500/30 text-yellow-400 text-xs font-bold uppercase tracking-widest mb-3 backdrop-blur-xl"
           >
-            Laporan Keuangan
-          </motion.span>
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
+            <ShieldCheck size={14} />
+            Akuntabilitas Publik
+          </motion.div>
+          
+          <motion.h2
+            initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-3xl md:text-5xl font-extrabold mt-3 mb-6"
+            className="text-3xl sm:text-5xl font-black text-white"
           >
-            Transparansi Dana Umat
+            Transparansi Kas & Amanah Umat
           </motion.h2>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
+
+          <motion.p
+            initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="text-lg text-emerald-100/80 max-w-2xl mx-auto leading-relaxed"
+            className="text-base sm:text-lg text-emerald-100/80 mt-4 leading-relaxed font-normal"
           >
-            Kami meyakini bahwa amanah umat harus dikelola secara profesional dan transparan. Berikut adalah ringkasan keuangan kas masjid bulan ini.
+            Setiap rupiah infaq, sedekah, dan wakaf dicatat secara terbuka dan dilaporkan setiap pekan demi menjaga amanah para dermawan dan kemakmuran masjid.
           </motion.p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {/* 3 Metric Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
           
-          {/* Saldo Kas */}
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
+          {/* 1. Saldo Kas */}
+          <motion.div
+            initial={{ opacity: 0, y: 25 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-emerald-900/50 backdrop-blur-md border border-emerald-500/30 rounded-3xl p-8 relative overflow-hidden"
+            className="liquid-bento-card p-8 flex flex-col justify-between relative overflow-hidden group"
           >
-            <div className="w-16 h-16 bg-yellow-400 rounded-2xl flex items-center justify-center text-emerald-950 mb-6 shadow-lg">
-              <Wallet size={32} />
+            <div>
+              <div className="w-14 h-14 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-2xl flex items-center justify-center text-emerald-950 mb-6 shadow-lg shadow-yellow-500/20 border border-yellow-200/50">
+                <Wallet size={28} />
+              </div>
+              <p className="text-xs font-bold uppercase tracking-widest text-emerald-300 mb-1">
+                Total Saldo Kas Berjalan
+              </p>
+              <h3 className="text-3xl sm:text-4xl font-black text-white font-mono tracking-tight mb-4">
+                Rp 45.500.000
+              </h3>
             </div>
-            <p className="text-emerald-200 font-medium mb-1">Total Saldo Kas</p>
-            <h3 className="text-4xl font-bold text-white mb-4">Rp 45.500.000</h3>
-            <div className="flex items-center gap-2 text-sm text-emerald-300 font-medium bg-emerald-950/50 w-fit px-3 py-1.5 rounded-full border border-emerald-800">
-              <TrendingUp size={16} className="text-yellow-400" />
-              Naik 12% dari bulan lalu
+            <div className="flex items-center gap-2 text-xs text-yellow-300 font-semibold bg-white/5 w-fit px-3 py-1.5 rounded-full border border-white/10">
+              <TrendingUp size={14} className="text-yellow-400" />
+              Surplus +12.4% dari bulan lalu
             </div>
           </motion.div>
 
-          {/* Pemasukan */}
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
+          {/* 2. Pemasukan */}
+          <motion.div
+            initial={{ opacity: 0, y: 25 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="bg-emerald-900/50 backdrop-blur-md border border-emerald-500/30 rounded-3xl p-8"
+            className="liquid-bento-card p-8 flex flex-col justify-between"
           >
-            <div className="w-16 h-16 bg-emerald-800 rounded-2xl flex items-center justify-center text-emerald-400 mb-6 border border-emerald-600/50">
-              <ArrowDownToLine size={32} />
+            <div>
+              <div className="w-14 h-14 bg-emerald-500/20 rounded-2xl flex items-center justify-center text-emerald-400 mb-6 border border-emerald-500/30">
+                <ArrowDownToLine size={28} />
+              </div>
+              <p className="text-xs font-bold uppercase tracking-widest text-emerald-300 mb-1">
+                Pemasukan Bulan Ini
+              </p>
+              <h3 className="text-3xl sm:text-4xl font-black text-emerald-300 font-mono tracking-tight mb-3">
+                Rp 12.350.000
+              </h3>
+              <p className="text-xs text-emerald-100/70 leading-relaxed font-normal">
+                Berasal dari infaq Jumat, kotak amal harian, transfer donatur tetap, dan QRIS BSI.
+              </p>
             </div>
-            <p className="text-emerald-200 font-medium mb-1">Pemasukan Bulan Ini</p>
-            <h3 className="text-4xl font-bold text-white mb-4">Rp 12.350.000</h3>
-            <p className="text-emerald-400/80 text-sm leading-relaxed">
-              Berasal dari infaq Jumat, kotak amal harian, dan donatur tetap/transfer.
-            </p>
           </motion.div>
 
-          {/* Pengeluaran */}
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
+          {/* 3. Pengeluaran */}
+          <motion.div
+            initial={{ opacity: 0, y: 25 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="bg-emerald-900/50 backdrop-blur-md border border-emerald-500/30 rounded-3xl p-8"
+            className="liquid-bento-card p-8 flex flex-col justify-between"
           >
-            <div className="w-16 h-16 bg-red-500/20 rounded-2xl flex items-center justify-center text-red-400 mb-6 border border-red-500/30">
-              <ArrowUpFromLine size={32} />
+            <div>
+              <div className="w-14 h-14 bg-red-500/20 rounded-2xl flex items-center justify-center text-red-400 mb-6 border border-red-500/30">
+                <ArrowUpFromLine size={28} />
+              </div>
+              <p className="text-xs font-bold uppercase tracking-widest text-emerald-300 mb-1">
+                Pengeluaran Bulan Ini
+              </p>
+              <h3 className="text-3xl sm:text-4xl font-black text-rose-300 font-mono tracking-tight mb-3">
+                Rp 8.200.000
+              </h3>
+              <p className="text-xs text-emerald-100/70 leading-relaxed font-normal">
+                Biaya listrik & air, honor marbot, santunan yatim piatu dhuafa, dan perlengkapan ibadah.
+              </p>
             </div>
-            <p className="text-emerald-200 font-medium mb-1">Pengeluaran Bulan Ini</p>
-            <h3 className="text-4xl font-bold text-white mb-4">Rp 8.200.000</h3>
-            <p className="text-emerald-400/80 text-sm leading-relaxed">
-              Biaya operasional (listrik, air), kebersihan, honor pemateri, dan bantuan dhuafa.
-            </p>
           </motion.div>
 
         </div>
+
+        {/* Audit Disclaimer & Download Link */}
+        <div className="liquid-glass-dark p-6 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-4 border border-white/10">
+          <div className="flex items-center gap-3">
+            <ShieldCheck size={24} className="text-yellow-400 flex-shrink-0" />
+            <p className="text-xs text-emerald-100/80">
+              Laporan keuangan diaudit berkala oleh Dewan Pengawas Takmir Masjid Wali Songo Sakaddu Barat.
+            </p>
+          </div>
+          <Link
+            href="/dashboard/keuangan"
+            className="text-xs font-bold text-yellow-400 hover:text-yellow-300 flex items-center gap-2 whitespace-nowrap"
+          >
+            <FileSpreadsheet size={16} />
+            Lihat Rincian Buku Kas Lengkap
+          </Link>
+        </div>
+
       </div>
     </section>
   );

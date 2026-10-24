@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
+import { AlertCircle, RotateCcw, Home } from "lucide-react";
 
 export default function GlobalError({
   error,
@@ -16,28 +17,28 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-      <div className="max-w-md w-full text-center space-y-6 bg-white p-8 rounded-3xl shadow-xl">
-        <div className="w-20 h-20 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto shadow-sm">
-          <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-          </svg>
+    <div className="min-h-screen flex items-center justify-center p-4 mesh-ambient-bg mashrabiya-watermark">
+      <div className="max-w-md w-full text-center space-y-6 liquid-bento-card p-8 sm:p-10 border border-white/20 shadow-2xl">
+        <div className="w-16 h-16 bg-red-500/20 text-red-400 rounded-3xl flex items-center justify-center mx-auto border border-red-500/30">
+          <AlertCircle size={32} />
         </div>
         
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Terjadi Kesalahan Sistem</h2>
-          <p className="text-gray-500">
-            Aplikasi mengalami masalah teknis yang tidak terduga. Tim kami telah mencatat masalah ini.
+          <h2 className="text-2xl font-black text-white mb-2">Terjadi Gangguan Sistem</h2>
+          <p className="text-sm text-emerald-100/75 leading-relaxed font-normal">
+            Aplikasi mengalami kendala teknis yang tidak terduga. Silakan coba muat ulang halaman.
           </p>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
-          <Button onClick={() => reset()} className="w-full sm:w-auto">
+        <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+          <Button onClick={() => reset()} variant="secondary" className="w-full sm:w-auto">
+            <RotateCcw size={16} />
             Coba Muat Ulang
           </Button>
           <Link href="/" className="w-full sm:w-auto">
             <Button variant="outline" className="w-full">
-              Kembali ke Beranda
+              <Home size={16} />
+              Ke Beranda
             </Button>
           </Link>
         </div>

@@ -1,6 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { MosqueIcon } from "@/components/ui/MosqueIcon";
+import { Clock, MapPin, Sparkles, Maximize2, Minimize2, ArrowLeft } from "lucide-react";
+import Link from "next/link";
 
 type Timing = {
   id: string;
@@ -8,12 +11,12 @@ type Timing = {
 };
 
 const pList: Timing[] = [
-  { id: 'Imsak', name: 'IMSAK' },
-  { id: 'Fajr', name: 'SUBUH' },
-  { id: 'Dhuhr', name: 'DZUHUR' },
-  { id: 'Asr', name: 'ASHAR' },
-  { id: 'Maghrib', name: 'MAGHRIB' },
-  { id: 'Isha', name: 'ISYA' }
+  { id: "Imsak", name: "IMSAK" },
+  { id: "Fajr", name: "SUBUH" },
+  { id: "Dhuhr", name: "DZUHUR" },
+  { id: "Asr", name: "ASHAR" },
+  { id: "Maghrib", name: "MAGHRIB" },
+  { id: "Isha", name: "ISYA" },
 ];
 
 export default function TVPage() {
@@ -26,6 +29,7 @@ export default function TVPage() {
   const [countdown, setCountdown] = useState("-00:00:00");
   const [isUrgent, setIsUrgent] = useState(false);
   const [activePrayerId, setActivePrayerId] = useState("");
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const fetchAPI = async () => {
     try {
@@ -50,8 +54,8 @@ export default function TVPage() {
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
-      setTime(now.toLocaleTimeString('id-ID', { hour12: false }));
-      setDate(now.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }));
+      setTime(now.toLocaleTimeString("id-ID", { hour12: false }));
+      setDate(now.toLocaleDateString("id-ID", { weekday: "long", year: "numeric", month: "long", day: "numeric" }));
 
       if (timings) {
         let nextP = pList[1]; // Default Subuh
@@ -60,7 +64,7 @@ export default function TVPage() {
 
         for (let i = 1; i < pList.length; i++) {
           let p = pList[i];
-          let [h, m] = timings[p.id].split(':');
+          let [h, m] = timings[p.id].split(":");
           let t = new Date(now);
           t.setHours(parseInt(h), parseInt(m), 0, 0);
           
@@ -73,7 +77,7 @@ export default function TVPage() {
         }
 
         if (!found) {
-          let [h, m] = timings['Fajr'].split(':');
+          let [h, m] = timings["Fajr"].split(":");
           target = new Date(now);
           target.setDate(target.getDate() + 1);
           target.setHours(parseInt(h), parseInt(m), 0, 0);
@@ -84,9 +88,9 @@ export default function TVPage() {
         
         setIsUrgent(diff > 0 && diff < 10 * 60 * 1000); // < 10 minutes
 
-        const s = Math.floor((diff / 1000) % 60).toString().padStart(2, '0');
-        const m = Math.floor((diff / 1000 / 60) % 60).toString().padStart(2, '0');
-        const hStr = Math.floor((diff / 1000 / 60 / 60) % 24).toString().padStart(2, '0');
+        const s = Math.floor((diff / 1000) % 60).toString().padStart(2, "0");
+        const m = Math.floor((diff / 1000 / 60) % 60).toString().padStart(2, "0");
+        const hStr = Math.floor((diff / 1000 / 60 / 60) % 24).toString().padStart(2, "0");
         
         setNextPrayerName(nextP.name);
         setCountdown(`-${hStr}:${m}:${s}`);
@@ -98,83 +102,160 @@ export default function TVPage() {
     return () => clearInterval(clockInterval);
   }, [timings]);
 
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+      setIsFullscreen(true);
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+        setIsFullscreen(false);
+      }
+    }
+  };
+
   return (
-    <div className="bg-[#022c22] h-screen w-full flex flex-col justify-between overflow-hidden relative font-sans text-white">
+    <div className="bg-[#021a13] h-screen w-full flex flex-col justify-between overflow-hidden relative font-sans text-white mesh-ambient-bg mashrabiya-watermark select-none">
       <style dangerouslySetInnerHTML={{__html: `
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap');
-        .clock-font { font-family: 'Orbitron', sans-serif; }
-        .bg-pattern { background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.05"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E'); }
-        @keyframes marquee {
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800;900&family=Space+Grotesk:wght@500;700&display=swap');
+        .clock-font { font-family: 'Space Grotesk', system-ui, sans-serif; }
+        @keyframes ticker {
           0% { transform: translateX(100vw); }
           100% { transform: translateX(-100%); }
         }
-        .animate-marquee {
+        .animate-ticker {
           display: inline-block;
-          animation: marquee 30s linear infinite;
+          animation: ticker 32s linear infinite;
         }
       `}} />
 
-      <div className="absolute inset-0 bg-pattern opacity-100 z-0 pointer-events-none"></div>
+      {/* Floating Control Buttons */}
+      <div className="absolute top-4 right-4 z-50 flex items-center gap-2">
+        <Link
+          href="/"
+          className="p-3 rounded-2xl bg-white/10 hover:bg-white/20 backdrop-blur-xl border border-white/15 text-white transition-all shadow-lg"
+          title="Kembali ke Beranda"
+        >
+          <ArrowLeft size={18} />
+        </Link>
+        <button
+          onClick={toggleFullscreen}
+          className="p-3 rounded-2xl bg-white/10 hover:bg-white/20 backdrop-blur-xl border border-white/15 text-white transition-all shadow-lg"
+          title="Mode Layar Penuh (Fullscreen)"
+        >
+          {isFullscreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
+        </button>
+      </div>
 
-      {/* Top Header */}
-      <header className="relative z-10 flex justify-between items-center p-8 lg:p-12 bg-gradient-to-b from-black/80 to-transparent">
+      {/* Top Header Bar */}
+      <header className="relative z-10 flex justify-between items-center p-8 lg:p-10 border-b border-white/10 bg-emerald-950/40 backdrop-blur-2xl">
         <div className="flex items-center gap-6">
-          <div className="w-24 h-24 bg-yellow-400 rounded-full flex items-center justify-center shadow-lg border-4 border-emerald-900">
-            <i className="fa-solid fa-mosque text-5xl text-emerald-900"></i>
+          <div className="w-20 h-20 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-3xl flex items-center justify-center text-emerald-950 shadow-xl shadow-yellow-500/25 border-2 border-yellow-200/60">
+            <MosqueIcon size={44} variant="solid" className="text-emerald-950" />
           </div>
           <div>
-            <h1 className="text-5xl lg:text-6xl font-extrabold text-emerald-400 tracking-wide uppercase drop-shadow-md">MASJID WALI SONGO</h1>
-            <p className="text-xl lg:text-2xl text-emerald-100 mt-2 font-medium">Sakaddu Barat, Desa Bungbaruh, Kadur, Pamekasan</p>
+            <h1 className="text-4xl lg:text-5xl font-black text-white tracking-wide uppercase drop-shadow-md">
+              MASJID WALI SONGO
+            </h1>
+            <div className="flex items-center gap-2 text-base lg:text-lg text-emerald-200 mt-1 font-medium">
+              <MapPin size={16} className="text-yellow-400" />
+              <span>Sakaddu Barat, Desa Bungbaruh, Kec. Kadur, Kab. Pamekasan</span>
+            </div>
           </div>
         </div>
+
         <div className="text-right">
-          <div className="text-7xl lg:text-8xl font-black clock-font text-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,0.6)]">{time || "00:00:00"}</div>
-          <div className="text-2xl mt-4 text-white font-semibold">{date}</div>
-          <div className="text-xl text-emerald-300 font-medium mt-1">{hijri}</div>
+          <div className="text-6xl lg:text-7xl font-black clock-font text-yellow-400 tracking-wider drop-shadow-[0_0_25px_rgba(250,204,21,0.5)]">
+            {time || "00:00:00"}
+          </div>
+          <div className="text-xl mt-2 text-white font-semibold">{date}</div>
+          <div className="text-base text-emerald-300 font-medium mt-0.5">{hijri}</div>
         </div>
       </header>
 
-      {/* Center Screen (Next Prayer Countdown) */}
-      <main className="relative z-10 flex-1 flex flex-col justify-center items-center p-8">
-        <div className="bg-black/40 backdrop-blur-sm border-2 border-emerald-500/30 rounded-3xl p-12 text-center shadow-2xl">
-          <h2 className="text-4xl font-semibold text-emerald-100 mb-6">
-            Menuju Waktu <span className="text-yellow-400 font-bold uppercase text-5xl ml-2">{nextPrayerName}</span>
+      {/* Center Screen: Next Prayer Big Liquid Glass Countdown */}
+      <main className="relative z-10 flex-1 flex flex-col justify-center items-center px-8 py-6">
+        <div className="liquid-bento-card bg-emerald-950/60 border border-white/20 p-10 lg:p-14 text-center max-w-4xl w-full shadow-2xl relative overflow-hidden">
+          <div className="flex items-center justify-center gap-2 text-emerald-300 font-bold uppercase tracking-widest text-sm mb-4">
+            <Clock size={18} className="text-yellow-400" />
+            <span>Menuju Waktu Salat Berikutnya</span>
+          </div>
+
+          <h2 className="text-4xl lg:text-5xl font-black text-white mb-6">
+            Menuju Waktu{" "}
+            <span className="text-yellow-400 uppercase ml-2 underline decoration-yellow-400/50 underline-offset-8">
+              {nextPrayerName}
+            </span>
           </h2>
-          <div className={`text-[10rem] leading-none clock-font font-bold tracking-widest drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] ${isUrgent ? 'text-red-500 animate-pulse' : 'text-white'}`}>
+
+          <div
+            className={`text-8xl lg:text-[10rem] leading-none clock-font font-black tracking-widest drop-shadow-[0_12px_24px_rgba(0,0,0,0.8)] ${
+              isUrgent ? "text-rose-400 animate-pulse" : "text-white"
+            }`}
+          >
             {countdown}
           </div>
+
+          {isUrgent && (
+            <div className="mt-6 px-6 py-2 rounded-full bg-rose-500/25 border border-rose-500/40 text-rose-200 text-sm font-bold tracking-widest uppercase inline-block animate-pulse">
+              Persiapan Iqamah / Luruskan Shaf
+            </div>
+          )}
         </div>
       </main>
 
-      {/* Bottom (Prayer Times Grid) */}
-      <div className="relative z-10 px-8 lg:px-12 pb-8">
-        <div className="grid grid-cols-6 gap-6">
+      {/* Bottom Prayer Times Grid (Liquid Glass Tiles) */}
+      <div className="relative z-10 px-8 lg:px-12 pb-6">
+        <div className="grid grid-cols-6 gap-5">
           {!timings ? (
-            <div className="col-span-6 text-center text-emerald-200 text-2xl animate-pulse">Menghubungkan ke sistem jadwal Kemenag...</div>
+            <div className="col-span-6 text-center text-emerald-200 text-xl animate-pulse">
+              Menghubungkan ke sistem jadwal Kemenag Pamekasan...
+            </div>
           ) : (
-            pList.map(p => (
-              <div 
-                key={p.id}
-                className={`rounded-3xl border-2 p-8 text-center flex flex-col justify-center transform transition duration-500 shadow-lg ${p.id === activePrayerId ? 'bg-emerald-600/90 border-yellow-400 scale-105 shadow-yellow-500/50' : 'bg-black/50 border-emerald-500/30 backdrop-blur-md'}`}
-              >
-                <h3 className="text-2xl lg:text-3xl font-bold text-emerald-300 tracking-widest mb-3">{p.name}</h3>
-                <div className="text-5xl lg:text-6xl font-extrabold clock-font text-white drop-shadow-md">
-                  {timings[p.id]}
+            pList.map((p) => {
+              const isActive = p.id === activePrayerId;
+              return (
+                <div
+                  key={p.id}
+                  className={`rounded-3xl border-2 p-6 lg:p-7 text-center flex flex-col justify-center transition-all duration-500 ${
+                    isActive
+                      ? "liquid-glass-gold border-yellow-400 shadow-[0_0_35px_rgba(234,179,8,0.4)] scale-105"
+                      : "liquid-glass-dark border-white/15"
+                  }`}
+                >
+                  <h3
+                    className={`text-lg lg:text-xl font-bold tracking-widest uppercase mb-2 ${
+                      isActive ? "text-yellow-300 font-black" : "text-emerald-300"
+                    }`}
+                  >
+                    {p.name}
+                  </h3>
+                  <div
+                    className={`text-4xl lg:text-5xl font-extrabold clock-font drop-shadow-md ${
+                      isActive ? "text-white" : "text-emerald-100"
+                    }`}
+                  >
+                    {timings[p.id]}
+                  </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       </div>
 
-      {/* Running Text (Footer) */}
-      <footer className="relative z-10 bg-emerald-900 text-white text-4xl font-semibold py-5 px-4 whitespace-nowrap overflow-hidden border-t-8 border-yellow-500 shadow-[0_-10px_20px_rgba(0,0,0,0.5)]">
-        <div className="tracking-wide animate-marquee">
-          <i className="fa-solid fa-star-and-crescent text-yellow-400 mx-4"></i> Selamat Datang di Masjid Wali Songo 
-          <i className="fa-solid fa-star-and-crescent text-yellow-400 mx-4"></i> Mohon lurus dan rapatkan shaf sebelum salat berjamaah dimulai 
-          <i className="fa-solid fa-star-and-crescent text-yellow-400 mx-4"></i> Harap menonaktifkan atau mensenyapkan telepon seluler (HP) Anda selama berada di dalam masjid 
-          <i className="fa-solid fa-star-and-crescent text-yellow-400 mx-4"></i> Salurkan Zakat, Infaq, dan Sadaqah (ZISWAF) terbaik Anda untuk kemakmuran masjid melalui Rekening BSI (Bank Syariah Indonesia) 7123456789 a.n Masjid Wali Songo
-          <i className="fa-solid fa-star-and-crescent text-yellow-400 mx-4"></i>
+      {/* Running Marquee Ticker Footer */}
+      <footer className="relative z-10 bg-emerald-950/80 backdrop-blur-2xl text-emerald-100 text-xl font-semibold py-4 px-4 whitespace-nowrap overflow-hidden border-t border-yellow-400/40 shadow-2xl">
+        <div className="tracking-wide animate-ticker flex items-center">
+          <Sparkles size={20} className="text-yellow-400 mx-4 inline-block flex-shrink-0" />
+          Selamat Datang di Masjid Wali Songo Sakaddu Barat, Desa Bungbaruh, Kadur, Pamekasan
+          <Sparkles size={20} className="text-yellow-400 mx-4 inline-block flex-shrink-0" />
+          Mohon lurus dan rapatkan shaf sebelum salat berjamaah dimulai
+          <Sparkles size={20} className="text-yellow-400 mx-4 inline-block flex-shrink-0" />
+          Harap menonaktifkan atau mensenyapkan telepon seluler (HP) selama berada di dalam masjid
+          <Sparkles size={20} className="text-yellow-400 mx-4 inline-block flex-shrink-0" />
+          Salurkan Zakat, Infaq, dan Sadaqah (ZISWAF) terbaik Anda melalui Rekening Resmi BSI 7123456789 a.n. Masjid Wali Songo
+          <Sparkles size={20} className="text-yellow-400 mx-4 inline-block flex-shrink-0" />
         </div>
       </footer>
     </div>

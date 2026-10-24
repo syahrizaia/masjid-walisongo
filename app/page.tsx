@@ -1,5 +1,3 @@
-import Link from "next/link";
-import Image from "next/image";
 import { PublicNavbar } from "@/components/public/Navbar";
 import { HeroSection } from "@/components/public/HeroSection";
 import { BentoGridInfo } from "@/components/public/BentoGridInfo";
@@ -11,7 +9,7 @@ import { FooterSection } from "@/components/public/FooterSection";
 
 export default function HomePage() {
   return (
-    <div className="bg-gray-50 min-h-screen font-sans">
+    <div className="min-h-screen mesh-ambient-bg text-slate-100 font-sans selection:bg-yellow-400 selection:text-emerald-950">
       <PublicNavbar />
       
       <main>
